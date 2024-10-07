@@ -5,9 +5,24 @@ jobs:
   run-dbt-app:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo first steps for runner
-        run: echo "🚀 starts dbt app"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Write dbt profile to file
         run: |
           mkdir -p ~/.dbt
           echo "${{ secrets.SNOWFLAKE_DBT_PROFILE }}" > ~/.dbt/profiles.yml
+
+      - name: setup dependencies
+        run: |
+          pip3 install -r requirements.txt
+
+      - name: debug dbt app
+        run: |
+          echo "🚀 debug dbt app"
+          dbt debug
