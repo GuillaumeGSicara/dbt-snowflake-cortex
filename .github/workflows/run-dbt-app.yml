@@ -5,4 +5,9 @@ jobs:
   run-dbt-app:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🚀 starts dbt app"
+      - name: Echo first steps for runner
+        run: echo "🚀 starts dbt app"
+      - name: Write dbt profile to file
+        run: |
+          mkdir -p ~/.dbt
+          echo "${{ secrets.DBT_PROFILE }}" > ~/.dbt/profiles.yml
