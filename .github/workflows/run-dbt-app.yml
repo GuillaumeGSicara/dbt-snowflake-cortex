@@ -10,4 +10,4 @@ jobs:
       - name: Write dbt profile to file
         run: |
           mkdir -p ~/.dbt
-          echo "${{ secrets.DBT_PROFILE }}" > ~/.dbt/profiles.yml
+          echo "${{ secrets.SNOWFLAKE_DBT_PROFILE }}" > ~/.dbt/profiles.yml
