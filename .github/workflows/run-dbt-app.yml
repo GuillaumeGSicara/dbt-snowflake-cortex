@@ -24,5 +24,6 @@ jobs:
 
       - name: debug dbt app
         run: |
+          cd dbt-app
           echo "🚀 debug dbt app"
           dbt debug
