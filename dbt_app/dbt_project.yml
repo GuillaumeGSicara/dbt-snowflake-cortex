@@ -1,0 +1,27 @@
+name: "dbt_app"
+version: "1.0.0"
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: cortex-profile
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+# These directories will be removed by `dbt clean`
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+models:
+  cortex-app:
+    materialized: ephemeral
+
+on-run-end: "{{ snowflake_utils.apply_meta_as_tags(results) }}"

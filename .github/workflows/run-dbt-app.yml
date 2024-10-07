@@ -1,0 +1,8 @@
+name: Run DBT App
+run-name: ${{ github.run_id }} run dbt app
+on: [push]
+jobs:
+  run-dbt-app:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🚀 starts dbt app"
