@@ -31,3 +31,28 @@ jobs:
         run: |
           cd dbt_app
           dbt docs generate
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dbt-docs
+          path: dbt_app/target
+
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: generate-docs
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download documentation artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dbt-docs
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
