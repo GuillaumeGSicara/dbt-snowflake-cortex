@@ -22,6 +22,11 @@ jobs:
         run: |
           pip3 install -r requirements.txt
 
+      - name: install dbt-deps
+        run: |
+          cd dbt_app
+          dbt deps
+
       - name: debug dbt app
         run: |
           cd dbt_app
