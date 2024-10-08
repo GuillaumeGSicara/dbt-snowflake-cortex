@@ -17,6 +17,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: install dbt-deps
+        run: |
+          cd dbt_app
+          dbt deps
+
       - name: Write dbt profile to file
         run: |
           mkdir -p ~/.dbt
