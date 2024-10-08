@@ -29,11 +29,12 @@ jobs:
 
       - name: Generate documentation
         run: |
-          cd dbt_app
-          dbt docs generate
+          cd dbt_app/; dbt docs generate --static; mv ./target/static_index.html ../docs/index.html
 
-      - name: Upload documentation artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: dbt-docs
-          path: dbt_app/target
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "guillaume.gonde@theodo.com"
+          git config --global user.name "GuillaumeGSicara_GithubWorkflow"
+          git add docs/index.html
+          git commit -m "Github Workflow Generate DBT docs"
+          git push
