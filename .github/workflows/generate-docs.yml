@@ -17,6 +17,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Write dbt profile to file
+        run: |
+          mkdir -p ~/.dbt
+          echo "${{ secrets.SNOWFLAKE_DBT_PROFILE }}" > ~/.dbt/profiles.yml
+
       - name: Generate documentation
         run: |
           cd dbt_app
