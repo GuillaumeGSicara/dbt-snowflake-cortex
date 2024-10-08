@@ -33,7 +33,7 @@ jobs:
           dbt docs generate
 
       - name: Upload documentation artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dbt-docs
           path: dbt_app/target
