@@ -11,8 +11,13 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Generate documentation
-        run: dbt docs generate
+        run: |
+          cd dbt_app
+          dbt docs generate
