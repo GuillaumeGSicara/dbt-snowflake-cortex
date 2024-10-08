@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'docs/**'
+    paths:
+      - 'dbt_app/**'
 
 jobs:
   generate-docs:

@@ -1,6 +1,11 @@
 name: Run DBT App
 run-name: ${{ github.run_id }} run dbt app
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'dbt_app/**'
 jobs:
   run-dbt-app:
     runs-on: ubuntu-latest
