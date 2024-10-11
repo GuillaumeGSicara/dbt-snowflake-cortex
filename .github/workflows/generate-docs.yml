@@ -41,5 +41,5 @@ jobs:
           git config --global user.email "guillaume.gonde@theodo.com"
           git config --global user.name "GuillaumeGSicara_GithubWorkflow"
           git add ./docs/index.html
-          git commit -m "Github Workflow Generate DBT docs"
+          git commit -m "Github Actions: Generate DBT docs"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/GuillaumeGSicara/dbt-snowflake-cortex.git
