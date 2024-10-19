@@ -1,3 +1,5 @@
+# Generated with GPT-4
+
 TAGS = ["Marketing", "Alert", "Refund", "Secur", "Support", "Auto"]
 COUNTRIES = ["France", "United-Kingdom", "Germany", "Ireland"]
 CAMPAIGNS = [

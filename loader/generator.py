@@ -54,7 +54,7 @@ def generate_customer_data() -> list[dict[str, Any]]:
                 random.choices(
                     population=COUNTRIES,
                     weights=generate_random_probability_distribution(len(COUNTRIES))
-                )
+                )[0]
             )
         })
     return customer_data
