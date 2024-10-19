@@ -94,7 +94,7 @@ def generate_sends() -> list[dict[str, Any]]:
                     "send_id": str(customer_id).zfill(9) + str(rand_number_of_sends).zfill(9),
                     "customer_id": customer_id,
                     "campaign_id": random.randint(0, len(CAMPAIGNS) - 1),
-                    "sent_at": generate_random_datetime(2022, 2024)}
+                    "send_date": generate_random_datetime(2022, 2024)}
             )
     return send_data
 
