@@ -13,7 +13,7 @@ models:
           - unique
       - name: customer_id
         description: >
-          The unique identifier for the customer to which the communication was sent 
+          The unique identifier for the customer to which the communication was sent
         data_tests:
           - not_null
           - relationships:

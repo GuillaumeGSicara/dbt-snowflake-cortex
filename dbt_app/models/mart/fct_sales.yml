@@ -30,4 +30,3 @@ models:
           The name of the product that was sold (eg: "Custom-Built PCs")
         data_tests:
           - not_null
-      
