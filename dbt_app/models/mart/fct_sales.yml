@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description:
+      This model contains informations about sales made by customers.
+
+    columns:
+      - name: sale_id
+        description: >
+          The unique identifier for the sale.
+        data_tests:
+          - unique
+          - not_null
+      - name: sold_at
+        description: >
+          The date when the sale was made.
+        data_tests:
+          - not_null
+      - name: customer_id
+        description: >
+          The unique identifier for the customer who made the purchase
+        data_tests:
+          - not_null
+          - relationships:
+             to: ref('dim_customers')
+             field: customer_id
+      - name: product_name
+        description: >
+          The name of the product that was sold (eg: "Custom-Built PCs")
+        data_tests:
+          - not_null
+      

@@ -15,13 +15,16 @@ snapshot-paths: ["snapshots"]
 
 # These directories will be removed by `dbt clean`
 clean-targets:
-  - "target"
-  - "dbt_packages"
+  - target
+  - dbt_packages
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 models:
-  cortex-app:
-    materialized: ephemeral
+  dbt_app:
+    stg:
+      materialized: view
+    mart:
+      materialized: table
 
 on-run-end: "{{ snowflake_utils.apply_meta_as_tags(results) }}"

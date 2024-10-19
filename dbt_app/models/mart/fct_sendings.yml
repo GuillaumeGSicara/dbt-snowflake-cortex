@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fct_sendings
+    description: >
+      This model contains informations about email sendings.
+    columns:
+      - name: sending_id
+        description: >
+          The unique identifier for the sending.
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: >
+          The unique identifier for the customer to which the communication was sent 
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: campaign_id
+        description: >
+          The unique identifier for the campaign of the sending
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_campaigns')
+              field: campaign_id
+      - name: sent_at
+        description: >
+          The date and time when the email was sent.
+        data_tests:
+          - not_null

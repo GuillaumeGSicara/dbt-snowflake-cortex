@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw_layer
+    database: DBT_CORTEX
+    schema: RAW
+    tables:
+      - name: CAMPAIGNS
+      - name: CUSTOMERS
+      - name: SALES
+      - name: SENDS
+

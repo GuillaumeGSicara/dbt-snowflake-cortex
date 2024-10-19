@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: >
+      This models contains informations about customers.
+    columns:
+      - name: customer_id
+        description: >
+          The unique identifier for the customer.
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_full_name
+        description: >
+          The name of the customer.
+        data_tests:
+          - not_null
+      - name: customer_first_name
+        description: >
+          The first name of the customer.
+        data_tests:
+          - not_null
+      - name: customer_last_name
+        description: >
+          The last name of the customer.
+        data_tests:
+          - not_null
+      - name: customer_email
+        description: >
+          The email address of the customer.
+        data_tests:
+          - not_null
+      - name: customer_country
+        description: >
+           The country where the customer is located.

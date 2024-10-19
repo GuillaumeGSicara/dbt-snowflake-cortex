@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: brg_tags_to_campaigns
+    description: >
+      This models contains the many-to-many relationship between tags and campaigns.
+    columns:
+      - name: tag_id
+        description: >
+          The unique identifier for the tag.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_tags')
+              field: tag_id
+      - name: campaign_id
+        description: >
+          The unique identifier for the campaign.
+        data_tests:
+          - not_null

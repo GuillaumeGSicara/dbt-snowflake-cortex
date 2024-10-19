@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_campaigns
+    description: >
+      This models contains informations about marketing campaigns.
+    columns:
+      - name: campaign_id
+        description: >
+          The unique identifier for the campaign.
+        data_tests:
+          - not_null
+          - unique
+      - name: campaign_name
+        description: >
+          The name of the campaign.
+        data_tests:
+          - not_null
+      - name: campaign_created_at
+        description: >
+          The date and time when the campaign was created.
+        data_tests:
+          - not_null
