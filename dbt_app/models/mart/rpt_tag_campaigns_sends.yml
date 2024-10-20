@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: rpt_tag_campaigns_sends
+    description: >
+      This models contains information about email sendings per tag.
+      on tag can be applied to multiple campaigns and a campaign can have multiple tags.
+      This dataset unique dimensions features are tag_name and campaign_id
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tag_name
+            - campaign_id
+
+    columns:
+      - name: tag_name
+        description: >
+          the name of the tag
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_tags')
+              field: tag_name
+      - name: campaign_id
+        description: >
+          the id of the campaign the tag was applied to
+          Do not run analysis solely on this field, use it in combination with tag_name instead.
+        data_tests:
+          - relationships:
+              to: ref('dim_campaigns')
+              field: campaign_id
+      - name: campaign_name
+        description: >
+          the name of the campaign the tag was applied to
+          Do not run analysis solely on this field, use it in combination with tag_name instead.
+      - name: nb_sends
+        description: >
+          the number of email sends for this tag and campaign
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: nb_customers_sent_to
+        description: >
+          the number of unique customers that received the email for this tag and campaign
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
