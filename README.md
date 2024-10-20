@@ -7,6 +7,8 @@
 
 The purpose of this repository is to demonstrate the use of Cortex Analyst on a demo dbt project with Snowflake. The project generates mock data with Python, loads it into Snowflake, prepares/documents the data with [**dbt-core**](https://docs.getdbt.com/docs/core/about-core-setup), and sets up a Streamlit application with Cortex Analyst to generate insights with natural language.
 
+Visit the github page for the project to get the [**project's dbt-docs documentation**](https://guillaumegsicara.github.io/dbt-snowflake-cortex/#!/overview)
+
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Project Description](#project-description)
