@@ -1,0 +1,12 @@
+name: Run DBT App
+run-name: ${{ github.run_id }} Run Streamlit in Snowflake deployement
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'SiS/**'
+    paths-ignore:
+      - 'SiS/semantic_models/**'
+
+# WIP

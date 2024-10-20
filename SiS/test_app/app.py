@@ -3,8 +3,9 @@ from typing import Dict, List, Optional
 import _snowflake
 import json
 import streamlit as st
-import time
 from snowflake.snowpark.context import get_active_session
+
+# Contents
 
 DATABASE = "DBT_CORTEX"
 SCHEMA = "DEFINITIONS"

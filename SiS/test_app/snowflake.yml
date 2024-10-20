@@ -1,0 +1,19 @@
+definition_version: 2
+entities:
+  pkg:
+    type: application package
+    identifier: my_pkg
+    stage: app_src.stage
+    manifest: app/manifest.yml
+  artifacts:
+    - src: streamlit/*
+      dest: streamlit/
+  app:
+    type: application
+    identifier: test_app
+    debug: false
+    from:
+      target: my_pkg
+    meta:
+      role: ACCOUNTADMIN
+      warehouse: COMPUTE_WH
