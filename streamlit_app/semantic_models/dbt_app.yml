@@ -23,8 +23,45 @@ tables:
         expr: campaign_name
         unique: false
 
+    time_dimensions:
       - name: campaign_created_at
         expr: campaign_created_at
         description: The day the campaign was created.
         data_type: TIMESTAMP_NTZ
         unique: false
+
+  - name: sendings_fact_table
+    description: This table contains all the sendings to each customer
+
+    base_table:
+      database: DBT_CORTEX
+      schema: PUBLIC
+      table: FCT_SENDINGS
+
+    measures:
+      - name: sending_id
+        description: The unique identifier for the sending.
+        data_type: TEXT
+        default_aggregation: count
+        expr: sending_id
+
+      - name: customer_id
+        description: The unique identifier for the customer to which the communication was sent
+        data_type: TEXT
+        default_aggregation: count
+        expr: customer_id
+
+    dimensions:
+      - name: campaign_id
+        description: The unique identifier for the campaign of the sending (see DIM_CAMPAIGNS)
+        data_type: TEXT
+        expr: campaign_id
+        unique: false
+
+    time_dimensions:
+      - name: sent_at
+        expr: sent_at
+        description: The date and time when the email was sent.
+        data_type: TIMESTAMP_NTZ
+
+

@@ -1,3 +1,4 @@
+
 upload-semantic-model:
 	snow stage copy ./streamlit_app/semantic_models/dbt_app.yml \
 		--database=DBT_CORTEX \
