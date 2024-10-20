@@ -1,0 +1,48 @@
+name: semantic_rpt_tag_campaigns_sends
+description: >
+  This semantic model contains information about email sendings per tag and campaign, along with associated metrics like the number of sends and customers.
+  The tag to campaign relationship is many-to-many, meaning that a tag can be applied to multiple campaigns and a campaign can have multiple tags.
+  When analyzing this dataset, the dimensions campaign_id and campaign_name **should always be used in combination with tag_name** to ensure accurate results.
+
+tables:
+  - name: rpt_tag_campaigns_sends
+    description:
+      This table contains the email sending details per tag and campaign. a tag can be applied to multiple campaigns and a campaign can have multiple tags.
+      When analyzing this dataset, the dimensions campaign_id and campaign_name **should always be used in combination with tag_name** to ensure accurate results.
+
+    base_table:
+      database: DBT_CORTEX
+      schema: PUBLIC
+      table: rpt_tag_campaigns_sends
+
+    measures:
+      - name: nb_sends
+        description: The number of email sends for this tag and campaign.
+        data_type: INTEGER
+        default_aggregation: sum
+        expr: nb_sends
+
+      - name: nb_customers_sent_to
+        description: The number of unique customers that received the email for this tag and campaign.
+        data_type: INTEGER
+        default_aggregation: sum
+        expr: nb_customers_sent_to
+
+    dimensions:
+      - name: tag_name
+        description: The name of the tag applied to the campaign.
+        data_type: TEXT
+        expr: tag_name
+        unique: false
+
+      - name: campaign_id
+        description: The unique identifier of the campaign the tag was applied to. Do not query this column alone, always use it in combination with tag_name.
+        data_type: TEXT
+        expr: campaign_id
+        unique: false
+
+      - name: campaign_name
+        description: The name of the campaign the tag was applied to. Do not query this column alone, always use it in combination with tag_name
+        data_type: TEXT
+        expr: campaign_name
+        unique: false
