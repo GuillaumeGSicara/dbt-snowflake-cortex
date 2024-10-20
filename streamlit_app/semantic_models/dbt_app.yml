@@ -1,0 +1,30 @@
+name: dbt_app_semantic_model
+description: this is a semantic model for the dbt app that contains all the tables and columns in the foundation model for the activity of our enterprise
+
+tables:
+  - name: campaigns_ref
+    description: This models contains informations about marketing campaigns.
+
+    base_table:
+        database: DBT_CORTEX
+        schema: PUBLIC
+        table: DIM_CAMPAIGNS
+
+    dimensions:
+      - name: campaign_id
+        description: The unique identifier for the campaign.
+        data_type: NUMBER
+        expr: campaign_id
+        unique: true
+
+      - name: campaign_name
+        description: The name of the campaign.
+        data_type: TEXT
+        expr: campaign_name
+        unique: false
+
+      - name: campaign_created_at
+        expr: campaign_created_at
+        description: The day the campaign was created.
+        data_type: TIMESTAMP_NTZ
+        unique: false
