@@ -1,10 +1,9 @@
 import os
 import json
-import yaml
-import snowflake.connector
+import yaml  # type: ignore
 
 from pathlib import Path
-from snowflake.connector import SnowflakeConnection
+from snowflake.connector import SnowflakeConnection  # type: ignore
 
 
 MAX_VALUES_SIZE = 16_384
@@ -19,6 +18,16 @@ TABLE_NAMES_TO_RAW_FILES = {
 
 
 def get_dbt_connection_info(profile_name: str, target_name: str) -> dict[str, str]:
+    """Yields a dictionary of the connections from the dbt profiles.yml file in the root user directory.
+
+    Args:
+        profile_name (str): The name of the profile in the the profile.yml file.
+        target_name (str): the name of the target in the profile.yml file for the profile
+
+    Returns:
+        dict[str, str]: a dictionary of the connection information for the profile and target
+    """
+
     profiles_path = os.path.expanduser('~/.dbt/profiles.yml')
     with open(profiles_path, 'r') as file:
         profiles = yaml.safe_load(file)
@@ -30,7 +39,7 @@ def get_connection() -> SnowflakeConnection:
         profile_name='cortex-profile',
         target_name='dev'
     )
-    return snowflake.connector.connect(
+    return SnowflakeConnection(
         user=dbt_conn["user"],
         password=dbt_conn["password"],
         account=dbt_conn["account"],
