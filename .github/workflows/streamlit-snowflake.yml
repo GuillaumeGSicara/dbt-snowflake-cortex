@@ -1,12 +1,39 @@
 name: Run DBT App
-run-name: ${{ github.run_id }} Run Streamlit in Snowflake deployement
+run-name: ${{ github.run_id }} Deploy streamlit app and semantic models
+
 on:
   push:
     branches:
       - main
     paths:
       - 'SiS/**'
-    paths-ignore:
-      - 'SiS/semantic_models/**'
 
-# WIP
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  deploy-semantic-models-and-streamlit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write snowCLI profile to file
+        run: |
+          mkdir -p ~/.snowflake
+          echo "${{ secrets.SNOWFLAKE_CLI_PROFILE }}" > ~/.snowflake/config.toml
+          snow connection set-default DEMO_CORTEX_ACCOUNT_ADMIN
+
+      - name: Deploy semantic models and Streamlit app
+        run: |
+          make upload-semantic-models
+          make deploy-streamlit-app

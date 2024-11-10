@@ -3,7 +3,7 @@ name = "dbt_snowflake_cortex"
 version = "0.1.0"
 description = "demo of cortex analyst with a dbt project"
 readme = "README.md"
-requires-python = ">=3.10.1"
+requires-python = ">=3.12.1"
 authors = [
     {name = "Guillaume Gsicara", email = "gguillaume.gonde@gmail.com"}
 ]
@@ -12,4 +12,4 @@ authors = [
 Documentation = "https://guillaumegsicara.github.io/dbt-snowflake-cortex/#!/overview"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
