@@ -26,20 +26,12 @@ jobs:
           python --version
           pip install -r requirements.txt
 
-      - name: Setup Snow CLI connection #
+      - name: Write snowCLI profile to file
         run: |
-          snow connection add \
-            --default \
-            --silent \
-            --connection-name DEMO_CORTEX_ACCOUNT_ADMIN \
-            --account "{{ secrets.SNOWFLAKE_ACCOUNT }}" \
-            --user "{{ secrets.SNOWFLAKE_USER }}" \
-            --password "{{ secrets.SNOWFLAKE_PASSWORD }}"\
-            --role "ACCOUNTADMIN" \
-            --schema "PUBLIC" \
-            --warehouse "COMPUTE_WH" \
-            --database "DBT_CORTEX" \
-            --authenticator "snowflake"
+          mkdir -p ~/.snowflake
+          echo "${{ vars.SNOWFLAKE_CLI_PROFILE }}" > ~/.snowflake/config.toml
+          chmod 0600 ~/.snowflake/config.toml
+          snow connection set-default DEMO_CORTEX_ACCOUNT_ADMIN
 
 
       - name: Deploy semantic models and Streamlit app
