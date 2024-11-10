@@ -81,7 +81,7 @@ The code can be found in the [`./SiS/te`](./SiS/app/) folder.
 ### DBT Setup
 1. Install dbt:
     ```sh
-    pip install dbt
+    pip install -r requirements.txt
     ```
 2. Initialize the dbt project:
     ```sh
