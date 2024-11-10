@@ -8,9 +8,6 @@ on:
     paths:
       - 'SiS/**'
 
-env:
-  PYTHON_VERSION: '3.10'
-
 jobs:
   deploy-semantic-models-and-streamlit:
     runs-on: ubuntu-latest
@@ -33,7 +30,9 @@ jobs:
         run: |
           mkdir -p ~/.snowflake
           echo "${{ secrets.SNOWFLAKE_CLI_PROFILE }}" > ~/.snowflake/config.toml
+          chmod 0600 "~/.snowflake/config.toml"
           snow connection set-default DEMO_CORTEX_ACCOUNT_ADMIN
+
 
       - name: Deploy semantic models and Streamlit app
         run: |

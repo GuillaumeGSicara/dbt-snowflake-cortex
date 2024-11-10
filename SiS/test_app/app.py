@@ -8,6 +8,7 @@ SCHEMA = "DEFINITIONS"
 STAGE = "SEMANTIC_RPT_TAG_CAMPAIGNS_SENDS"
 FILE = "semantic_rpt_tag_campaigns_sends.yml"
 
+
 def send_message(prompt: str) -> dict:
     """Calls the REST API and returns the response."""
     request_body = {
