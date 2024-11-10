@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: rpt_customer_informations
+    docs:
+      show: true
+      node_color: gold
+    description: |
+      This model contains customer information.
+      Besides customer records, the following information is added:
+        - What campaigns the customer has received
+        - What sales the customer has made
+
+    columns:
+      - name: customer_id
+        description: "The unique identifier for the customer."
+        data_tests:
+          - unique
+          - not_null
+      - name: number_of_sendings
+        description: "The number of sendings for the customer."
+        data_tests:
+          - not_null
+      - name: number_of_campaigns
+        description: "The number of distinct campaigns the customer has received."
+        data_tests:
+          - not_null
+      - name: campaign_names
+        description: "An array of distinct campaign names the customer has received."
+        data_tests:
+          - not_null
+      - name: tag_names
+        description: "An array of distinct tag names associated with the campaigns the customer has received."
+        data_tests:
+          - not_null
+      - name: number_of_purchases
+        description: "The number of distinct purchases made by the customer."
+        data_tests:
+          - not_null
+      - name: product_names
+        description: "An array of distinct product names purchased by the customer."
+        data_tests:
+          - not_null
+      - name: first_purchase_date
+        description: "The date of the customer's first purchase."
+      - name: last_purchase_date
+        description: "The date of the customer's last purchase."
+      - name: first_purchased_product
+        description: "The name of the first product purchased by the customer."
+      - name: last_purchased_product
+        description: "The name of the last product purchased by the customer."
+      - name: time_since_last_purchase
+        description: "The number of days since the customer's last purchase."
