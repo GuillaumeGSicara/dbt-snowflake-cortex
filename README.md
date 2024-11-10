@@ -17,6 +17,7 @@ _Note_: For a simplified version of this project: [see Snowflake-Labs demo](http
 - [Setup Instructions](#setup-instructions)
 - [Usage Instructions](#usage-instructions)
 - [Contribution Guidelines](#contribution-guidelines)
+- [Ressources](#ressources)
 - [License](#license)
 - [Contact](#contact)
 
@@ -121,6 +122,8 @@ This project is licensed under the MIT License. See the [MIT LICENSE](LICENSE.md
 ## Ressources
 
 - [Snowflake OSS Semantic Model Generator](https://github.com/Snowflake-Labs/semantic-model-generator)
+- [Snowflake's documentation - semantic models](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst/semantic-model-spec)
+
 
 ## Contact
 
