@@ -21,6 +21,6 @@ upload-semantic-models:
 		@semantic_rpt_customer_informations
 
 deploy-streamlit-app:
-	cd ./SiS/test_app && \
+	cd ./SiS/app && \
 	snow streamlit deploy cortex_analyst_demo \
 		--replace
