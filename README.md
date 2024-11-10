@@ -41,7 +41,7 @@ See the [`./snowflake_setup/`](./snowflake_setup/) directory.
 See the dbt app in the [`./dbt_app/`](./dbt_app/) directory.
 
 ### 3. Cortex Snowflake Semantic Layer
-Check the file in [`./SiS/semantic_models/`](./SiS/semantic_models/)
+Check the files in [`./SiS/semantic_models/`](./SiS/semantic_models/)
 
 ### 4. Streamlit App for Text-to-SQL with Cortex Analyst
 The code can be found in the [`./SiS/te`](./SiS/app/) folder.
@@ -128,3 +128,8 @@ This project is licensed under the MIT License. See the [MIT LICENSE](LICENSE.md
 ## Contact
 
 For questions or support, please contact [GuillaumeGSicara](mailto:guillaume.gonde@sicara.com).
+
+
+## Next Steps
+
+- Document (and improve CI/CD) setup !
