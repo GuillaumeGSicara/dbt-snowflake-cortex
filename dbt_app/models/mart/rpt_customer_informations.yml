@@ -2,9 +2,11 @@ version: 2
 
 models:
   - name: rpt_customer_informations
+
     docs:
       show: true
       node_color: gold
+
     description: |
       This model contains customer information.
       Besides customer records, the following information is added:
@@ -16,6 +18,18 @@ models:
         description: "The unique identifier for the customer."
         data_tests:
           - unique
+          - not_null
+      - name: customer_full_name
+        description: "The full name of the customer."
+        data_tests:
+          - not_null
+      - name: customer_email
+        description: "The email address of the customer."
+        data_tests:
+          - not_null
+      - name: customer_country
+        description: "The country of the customer."
+        data_tests:
           - not_null
       - name: number_of_sendings
         description: "The number of sendings for the customer."
