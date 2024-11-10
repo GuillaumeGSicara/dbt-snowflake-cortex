@@ -9,6 +9,8 @@ The purpose of this repository is to demonstrate the use of Cortex Analyst on a 
 
 Visit the github page to get the [**project's dbt-docs documentation**](https://guillaumegsicara.github.io/dbt-snowflake-cortex/#!/overview)
 
+_Note_: For a simplified version of this project: [see Snowflake-Labs demo](https://github.com/Snowflake-Labs/sfguide-getting-started-with-cortex-analyst) here
+
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Project Description](#project-description)
@@ -114,6 +116,11 @@ We welcome contributions! Please follow these steps:
 ## License
 
 This project is licensed under the MIT License. See the [MIT LICENSE](LICENSE.md) file for details.
+
+
+## Ressources
+
+- [Snowflake OSS Semantic Model Generator](https://github.com/Snowflake-Labs/semantic-model-generator)
 
 ## Contact
 
