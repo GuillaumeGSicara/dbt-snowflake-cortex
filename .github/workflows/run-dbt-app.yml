@@ -13,7 +13,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +25,8 @@ jobs:
 
       - name: setup dependencies
         run: |
-          pip3 install -r requirements.txt
+          python --version
+          pip install -r requirements.txt
 
       - name: install dbt-deps
         run: |
