@@ -14,13 +14,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
 
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python --version
+          pip install -r requirements.txt
 
       - name: install dbt-deps
         run: |
