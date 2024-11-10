@@ -5,8 +5,8 @@ from snowflake.snowpark.context import get_active_session
 
 DATABASE = "DBT_CORTEX"
 SCHEMA = "DEFINITIONS"
-STAGE = "SEMANTIC_RPT_TAG_CAMPAIGNS_SENDS"
-FILE = "semantic_rpt_tag_campaigns_sends.yml"
+STAGE = "SEMANTIC_RPT_CUSTOMER_INFORMATIONS"
+FILE = "semantic_rpt_customer_informations.yml"
 
 
 def send_message(prompt: str) -> dict:
