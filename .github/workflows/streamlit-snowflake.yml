@@ -1,4 +1,4 @@
-name: Run DBT App
+name: Deploy Cortex Streamlit App
 run-name: ${{ github.run_id }} Deploy streamlit app and semantic models
 
 on:

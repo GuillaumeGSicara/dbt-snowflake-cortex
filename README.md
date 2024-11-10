@@ -1,4 +1,4 @@
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![dbt-docs-workflow](https://github.com/GuillaumeGSicara/dbt-snowflake-cortex/actions/workflows/generate-docs.yml/badge.svg)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![lint-workflow](https://github.com/GuillaumeGSicara/dbt-snowflake-cortex/actions/workflows/lint.yml/badge.svg) ![dbt-docs-workflow](https://github.com/GuillaumeGSicara/dbt-snowflake-cortex/actions/workflows/generate-docs.yml/badge.svg)  ![SiS-workflow](https://github.com/GuillaumeGSicara/dbt-snowflake-cortex/actions/workflows/streamlit-snowflake.yml/badge.svg)
 
 ![Snowflake](https://a11ybadges.com/badge?logo=snowflake) ![Streamlit](https://a11ybadges.com/badge?logo=streamlit) ![Python](https://a11ybadges.com/badge?logo=python)
 
