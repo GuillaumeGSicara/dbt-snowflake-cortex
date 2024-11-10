@@ -1,0 +1,151 @@
+name: semantic_rpt_customer_informations
+description: >
+  This model contains general customer information.
+  It only contains one table `rpt_customer_informations` which is a view of the table `dim_customers` with additional information about the customer's activity.
+      Besides customer records, the following information is added:
+        - What campaigns the customer has received (with additional related attributes)
+        - What sales the customer has made (with additional related attributes)
+
+tables:
+  - name: rpt_customer_informations
+    description: >
+      The table contains one line per customer_id, it was created with the customer records in the table dim_customers
+      The tables then enrich customer records with activity informations
+        - What campaigns the customer has received (with additional related attributes)
+        - What sales the customer has made(with additional related attributes)
+
+    base_table:
+      database: DBT_CORTEX
+      schema: PUBLIC
+      table: rpt_customer_informations
+
+    measures:
+      - name: customer_id
+        description: The unique identifier for the customer.
+        data_type: INTEGER
+        default_aggregation: count_distinct
+        expr: customer_id
+        sample_values:
+          - "56"
+          - "21"
+
+      - name: customer_full_name
+        description: The full name of the customer.
+        data_type: TEXT
+        default_aggregation: count_distinct
+        expr: customer_full_name
+        sample_values:
+          - "John Doe"
+          - "Jane Doe"
+
+      - name: customer_email
+        description: The email address of the customer.
+        data_type: TEXT
+        default_aggregation: count_distinct
+        expr: customer_email
+        sample_values:
+          - "john.marshall@gmail.com"
+
+      - name: number_of_sendings
+        description: The number of sendings for the customer.
+        data_type: INTEGER
+        default_aggregation: sum
+        expr: number_of_sendings
+        sample_values:
+          - "5"
+          - "10"
+
+      - name: number_of_campaigns
+        description: The number of distinct campaigns the customer has received.
+        data_type: INTEGER
+        default_aggregation: sum
+        expr: number_of_campaigns
+        sample_values:
+          - "2"
+          - "5"
+
+      - name: number_of_purchases
+        description: The number of distinct purchases made by the customer.
+        data_type: INTEGER
+        default_aggregation: sum
+        expr: number_of_purchases
+        sample_values:
+          - "2"
+          - "5"
+
+    dimensions:
+      - name: campaign_names
+        description: An array of distinct campaign names the customer has received.
+        data_type: TEXT
+        expr: campaign_names
+        unique: false
+        sample_values:
+          - "Campaign 1"
+          - "Campaign 2"
+
+      - name: tag_names
+        description: >
+          An array of distinct tag names associated with the campaigns the customer has received.
+          Use LIKE or contains to search for a specific tag.
+        data_type: TEXT
+        expr: tag_names
+        unique: false
+        sample_values:
+          - "Tag 1"
+          - "Tag 2"
+
+      - name: product_names
+        description: An array of distinct product names purchased by the customer.
+        data_type: TEXT
+        expr: product_names
+        unique: false
+        sample_values:
+          - "Product 1"
+          - "Product 2"
+
+      - name: first_purchased_product
+        description: The name of the first product purchased by the customer.
+        data_type: TEXT
+        expr: first_purchased_product
+        unique: false
+        sample_values:
+          - "Product 1"
+          - "Product 2"
+
+      - name: last_purchased_product
+        description: The name of the last product purchased by the customer.
+        data_type: TEXT
+        expr: last_purchased_product
+        unique: false
+        sample_values:
+          - "Product 1"
+          - "Product 2"
+
+      - name: time_since_last_purchase
+        description: The number of days since the customer's last purchase.
+        data_type: INTEGER
+        expr: time_since_last_purchase
+        unique: false
+        sample_values:
+          - "5"
+          - "10"
+
+    time_dimensions:
+      - name: first_purchase_date
+        description: The date of the customer's first purchase.
+        data_type: TIMESTAMP
+        unique: false
+        expr: first_purchase_date
+        sample_values:
+          - "2021-01-01"
+          - "2021-02-01"
+
+      - name: last_purchase_date
+        description: The date of the customer's last purchase.
+        data_type: TIMESTAMP
+        unique: false
+        expr: last_purchase_date
+        sample_values:
+          - "2021-01-01"
+          - "2021-02-01"
+
