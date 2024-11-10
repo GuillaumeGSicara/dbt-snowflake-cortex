@@ -29,7 +29,9 @@ jobs:
       - name: Write snowCLI profile to file
         run: |
           mkdir -p ~/.snowflake
-          echo "${{ vars.SNOWFLAKE_CLI_PROFILE }}" > ~/.snowflake/config.toml
+          cat <<EOF > ~/.snowflake/config.toml
+          ${{ secrets.SNOWFLAKE_CLI_PROFILE }}
+          EOF
           chmod 0600 ~/.snowflake/config.toml
           snow connection set-default DEMO_CORTEX_ACCOUNT_ADMIN
 
