@@ -4,17 +4,18 @@ import yaml  # type: ignore
 import json
 import requests  # type: ignore
 import streamlit as st
+from typing import Dict, List, Optional
 from snowflake.connector import SnowflakeConnection
-from snowflake.snowpark.session import Session
+from snowflake.snowpark.session import Session, SnowparkSessionException
 from snowflake.snowpark.context import get_active_session
 
 DATABASE = "DBT_CORTEX"
 SCHEMA = "DEFINITIONS"
 STAGE = "SEMANTIC_RPT_CUSTOMER_INFORMATIONS"
 FILE = "semantic_rpt_customer_informations.yml"
+ENV: str
 
-
-def get_dbt_connection_info(profile_name: str, target_name: str) -> dict[str, str]:
+def get_dbt_connection_info(profile_name: str, target_name: str) -> Dict[str, str]:
     """Yields a dictionary of the connections from the dbt profiles.yml file in the root user directory.
 
     Args:
@@ -31,7 +32,7 @@ def get_dbt_connection_info(profile_name: str, target_name: str) -> dict[str, st
 
     return profiles.get(profile_name, {}).get('outputs', {}).get(target_name, {})
 
-def get_connections_params(session_params: dict = {}) -> dict:
+def get_connections_params(session_params: Dict = {}) -> Dict:
     dbt_conn = get_dbt_connection_info(
         profile_name='cortex-profile',
         target_name='dev'
@@ -43,16 +44,63 @@ def get_connections_params(session_params: dict = {}) -> dict:
         'session_parameters': session_params
     }
 
+def call_snowflake_endpoint(method: str, endpoint: str, request_body: Dict = {}) -> Dict:
+    content = {}
+    allowed_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"}
+    if method.upper() not in allowed_methods:
+        raise ValueError(f"HTTP method '{method}' is not allowed. Allowed methods are: {allowed_methods}")
+    if ENV == "prod":
+        import _snowflake
+        resp = _snowflake.send_snow_api_request(
+            method.upper(),
+            f"{endpoint}",
+            {},
+            {},
+            request_body,
+            {},
+            30000,
+        )
+        if resp["status"] < 400:
+            content = json.loads(resp["content"])
+        else:
+            raise Exception(
+                f"Failed request with status {resp['status']}: {resp}"
+            )
+    elif ENV == "dev":
+        resp = requests.request(
+            method=method.upper(),
+            url=f"https://{st.session_state.CONN.host}{endpoint}",
+            json=request_body,
+            headers={
+                "Authorization": f'Snowflake Token="{st.session_state.CONN.rest.token}"',
+                "Content-Type": "application/json",
+            },
+        )
+        if resp.status_code < 400:
+            content = json.loads(resp.content)
+        else:
+            raise Exception(
+                f"Failed request with status {resp.status_code}: {resp.text}"
+            )
 
-# For local developement
-if 'CONN' not in st.session_state or st.session_state.CONN is None:
-    st.session_state.CONN = SnowflakeConnection(**get_connections_params())
-    session = session = Session.builder.configs(
+    return content
+
+
+def get_dev_session() -> Session:
+    return Session.builder.app_name("local_dev_env").configs(
         get_connections_params()
     ).create()
 
+# For local developement
+try:
+    import _snowflake
+    ENV = "prod"
+except ImportError:
+    st.session_state.CONN = SnowflakeConnection(**get_connections_params())
+    session =  get_dev_session()
+    ENV = "dev"
 
-def send_message(prompt: str) -> dict:
+def send_message(prompt: str) -> Dict:
     """Calls the REST API and returns the response."""
     request_body = {
         "messages": [
@@ -69,21 +117,11 @@ def send_message(prompt: str) -> dict:
         "semantic_model_file": f"@{DATABASE}.{SCHEMA}.{STAGE}/{FILE}",
     }
 
-    resp = requests.post(
-        url=f"https://{st.session_state.CONN.host}/api/v2/cortex/analyst/message",
-        json=request_body,
-        headers={
-            "Authorization": f'Snowflake Token="{st.session_state.CONN.rest.token}"',
-            "Content-Type": "application/json",
-        },
+    return call_snowflake_endpoint(
+        method="POST",
+        endpoint="/api/v2/cortex/analyst/message",
+        request_body=request_body
     )
-
-    if resp.status_code < 400:
-        return json.loads(resp.content)
-    else:
-        raise Exception(
-            f"Failed request with status {resp.status_code}: {resp.text}"
-        )
 
 def process_message(prompt: str) -> None:
     """Processes a message and adds the response to the chat."""
@@ -100,7 +138,7 @@ def process_message(prompt: str) -> None:
     st.session_state.messages.append({"role": "assistant", "content": content})
 
 
-def display_content(content: list, message_index: int = None) -> None:
+def display_content(content: List, message_index: int = None) -> None:
     """Displays a content item for a message."""
     message_index = message_index or len(st.session_state.messages)
     for item in content:
@@ -116,7 +154,7 @@ def display_content(content: list, message_index: int = None) -> None:
                 st.code(item["statement"], language="sql")
             with st.expander("Results", expanded=True):
                 with st.spinner("Running SQL..."):
-                    session = get_active_session()
+                    session = get_active_session() if ENV == "prod" else get_dev_session()
                     df = session.sql(item["statement"]).to_pandas()
                     if len(df.index) > 1:
                         (data_tab,) = st.tabs(
@@ -130,7 +168,11 @@ def display_content(content: list, message_index: int = None) -> None:
 
 
 st.title("Cortex analyst")
-st.markdown(f"Semantic Model: `{FILE}`")
+st.markdown(f"""
+            **Environment:** `{ENV}`
+
+            **Semantic Model:** `{FILE}`"""
+        )
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
