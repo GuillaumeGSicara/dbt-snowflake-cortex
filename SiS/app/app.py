@@ -1,12 +1,55 @@
-import _snowflake
+
+import os
+import yaml  # type: ignore
 import json
+import requests  # type: ignore
 import streamlit as st
+from snowflake.connector import SnowflakeConnection
+from snowflake.snowpark.session import Session
 from snowflake.snowpark.context import get_active_session
 
 DATABASE = "DBT_CORTEX"
 SCHEMA = "DEFINITIONS"
 STAGE = "SEMANTIC_RPT_CUSTOMER_INFORMATIONS"
 FILE = "semantic_rpt_customer_informations.yml"
+
+
+def get_dbt_connection_info(profile_name: str, target_name: str) -> dict[str, str]:
+    """Yields a dictionary of the connections from the dbt profiles.yml file in the root user directory.
+
+    Args:
+        profile_name (str): The name of the profile in the the profile.yml file.
+        target_name (str): the name of the target in the profile.yml file for the profile
+
+    Returns:
+        dict[str, str]: a dictionary of the connection information for the profile and target
+    """
+
+    profiles_path = os.path.expanduser('~/.dbt/profiles.yml')
+    with open(profiles_path, 'r') as file:
+        profiles = yaml.safe_load(file)
+
+    return profiles.get(profile_name, {}).get('outputs', {}).get(target_name, {})
+
+def get_connections_params(session_params: dict = {}) -> dict:
+    dbt_conn = get_dbt_connection_info(
+        profile_name='cortex-profile',
+        target_name='dev'
+    )
+    return {
+        'user': dbt_conn["user"],
+        'password': dbt_conn["password"],
+        'account': dbt_conn["account"],
+        'session_parameters': session_params
+    }
+
+
+# For local developement
+if 'CONN' not in st.session_state or st.session_state.CONN is None:
+    st.session_state.CONN = SnowflakeConnection(**get_connections_params())
+    session = session = Session.builder.configs(
+        get_connections_params()
+    ).create()
 
 
 def send_message(prompt: str) -> dict:
@@ -25,20 +68,21 @@ def send_message(prompt: str) -> dict:
         ],
         "semantic_model_file": f"@{DATABASE}.{SCHEMA}.{STAGE}/{FILE}",
     }
-    resp = _snowflake.send_snow_api_request(
-        "POST",
-        f"/api/v2/cortex/analyst/message",
-        {},
-        {},
-        request_body,
-        {},
-        30000,
+
+    resp = requests.post(
+        url=f"https://{st.session_state.CONN.host}/api/v2/cortex/analyst/message",
+        json=request_body,
+        headers={
+            "Authorization": f'Snowflake Token="{st.session_state.CONN.rest.token}"',
+            "Content-Type": "application/json",
+        },
     )
-    if resp["status"] < 400:
-        return json.loads(resp["content"])
+
+    if resp.status_code < 400:
+        return json.loads(resp.content)
     else:
         raise Exception(
-            f"Failed request with status {resp['status']}: {resp}"
+            f"Failed request with status {resp.status_code}: {resp.text}"
         )
 
 def process_message(prompt: str) -> None:
