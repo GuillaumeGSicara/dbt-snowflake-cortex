@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: rpt_tag_campaigns_sends
+
+    docs:
+      show: true
+      node_color: gold
+
     description: >
       This models contains information about email sendings per tag.
       on tag can be applied to multiple campaigns and a campaign can have multiple tags.

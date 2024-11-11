@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: brg_tags_to_campaigns
+
+    docs:
+      show: true
+      node_color: silver
+
     description: >
       This models contains the many-to-many relationship between tags and campaigns.
     columns:

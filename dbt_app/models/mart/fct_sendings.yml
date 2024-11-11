@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: fct_sendings
+
+    docs:
+      show: true
+      node_color: silver
+
     description: >
       This model contains informations about email sendings.
     columns:

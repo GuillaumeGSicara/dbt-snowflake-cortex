@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: dim_tags
+
+    docs:
+      show: true
+      node_color: silver
+
     description: >
       This model contains a list of tags that can be applied to a campaign. a campaign can have zero to multiple tags.
       This model is thus linked to the dim_campaigns model through the brg_tags_to_campaigns bridge model to create a many-to-many relationship.

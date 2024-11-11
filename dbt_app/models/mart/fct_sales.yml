@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: fct_sales
+
+    docs:
+      show: true
+      node_color: silver
+
     description:
       This model contains informations about sales made by customers.
 

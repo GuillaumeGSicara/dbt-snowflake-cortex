@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: dim_customers
+
+    docs:
+      show: true
+      node_color: silver
+
     description: >
       This models contains informations about customers.
     columns:
