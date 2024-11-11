@@ -44,7 +44,7 @@ See the dbt app in the [`./dbt_app/`](./dbt_app/) directory.
 Check the files in [`./SiS/semantic_models/`](./SiS/semantic_models/)
 
 ### 4. Streamlit App for Text-to-SQL with Cortex Analyst
-The code can be found in the [`./SiS/te`](./SiS/app/) folder.
+The code can be found in the [`./SiS/`](./SiS/app/) folder.
 
 ## Setup Instructions
 

@@ -30,7 +30,7 @@ per_customer_sales_information AS (
         ARRAY_AGG(DISTINCT fct_sales.product_name) AS product_names,
         MIN(sold_at) AS first_purchase_date,
         MAX(sold_at) AS last_purchase_date,
-        DATEDIFF(DAY, CURRENT_DATE(), MAX(sold_at)) AS time_since_last_purchase
+        DATEDIFF(DAY, MAX(sold_at), CURRENT_DATE()) AS time_since_last_purchase
     FROM {{ ref('fct_sales') }}  AS fct_sales
     GROUP BY
         customer_id

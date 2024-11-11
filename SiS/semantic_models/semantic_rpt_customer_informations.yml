@@ -26,8 +26,9 @@ tables:
         default_aggregation: count_distinct
         expr: customer_id
         sample_values:
-          - "56"
-          - "21"
+          - 1256
+          - 221
+          - 1943
 
       - name: customer_full_name
         description: The full name of the customer.
@@ -35,8 +36,8 @@ tables:
         default_aggregation: count_distinct
         expr: customer_full_name
         sample_values:
-          - "John Doe"
-          - "Jane Doe"
+          - "Audrie Diane-Marie"
+          - "Rebe Barrett"
 
       - name: customer_email
         description: The email address of the customer.
@@ -46,42 +47,62 @@ tables:
         sample_values:
           - "john.marshall@gmail.com"
 
+      - name: customer_country
+        description: The country of the customer
+        data_type: TEXT
+        default_aggregation: count_distinct
+        expr: customer_country
+        sample_values:
+          - "France"
+          - "Germany"
+          - "United Kingdom"
+
       - name: number_of_sendings
-        description: The number of sendings for the customer.
+        description: >
+          The number of sending received by the customer (all time).
+          Do not alias that metric after aggregation, preserve the name `number_of_sendings`
         data_type: INTEGER
         default_aggregation: sum
         expr: number_of_sendings
         sample_values:
-          - "5"
-          - "10"
+          - 5
+          - 10
+          - 0
 
       - name: number_of_campaigns
-        description: The number of distinct campaigns the customer has received.
+        description: >
+          The number of distinct campaigns the customer has received (all time).
+          Do not alias that metric after aggregation, preserve the name `number_of_campaigns`
         data_type: INTEGER
         default_aggregation: sum
         expr: number_of_campaigns
         sample_values:
-          - "2"
-          - "5"
+          - 2
+          - 5
+          - 0
 
       - name: number_of_purchases
-        description: The number of distinct purchases made by the customer.
+        description: >
+          The number of distinct purchases made by the customer (all time).
+          Do not alias that metric after aggregation, preserve the name `number_of_purchases`
         data_type: INTEGER
         default_aggregation: sum
         expr: number_of_purchases
         sample_values:
-          - "2"
-          - "5"
+          - 2
+          - 5
+          - 0
 
     dimensions:
       - name: campaign_names
-        description: An array of distinct campaign names the customer has received.
+        description: An array of distinct campaign names the customer has received (all time)
         data_type: TEXT
         expr: campaign_names
         unique: false
         sample_values:
-          - "Campaign 1"
-          - "Campaign 2"
+          - "[Secure Refund Beacon,Auto-Guard Support Line]"
+          - "[Marketing Guardian Alerts]"
+          - "[]"
 
       - name: tag_names
         description: >
@@ -91,48 +112,61 @@ tables:
         expr: tag_names
         unique: false
         sample_values:
-          - "Tag 1"
-          - "Tag 2"
+          - "[Secur,Refund,Alert,Support]"
+          - "[Marketing,Alert]"
+          - "[]"
 
       - name: product_names
-        description: An array of distinct product names purchased by the customer.
+        description: A text array of distinct product names purchased by the customer.
         data_type: TEXT
         expr: product_names
         unique: false
         sample_values:
-          - "Product 1"
-          - "Product 2"
+          - "[Cloud Storage Solutions]"
+          - "[Website and E-Commerce Development Services,IT Consulting Services]"
+          - "[]"
 
-      - name: first_purchased_product
-        description: The name of the first product purchased by the customer.
-        data_type: TEXT
-        expr: first_purchased_product
-        unique: false
-        sample_values:
-          - "Product 1"
-          - "Product 2"
+      # - name: first_purchased_product
+      #   synonyms: ["first_product_purchased", "first_sold_product"]
+      #   description: >
+      #     The name of the first product purchased by the customer.
+      #     Do not alias that column after aggregation or windowing, preserve the name `first_purchased_product`
+      #   data_type: TEXT
+      #   expr: first_purchased_product
+      #   unique: false
+      #   sample_values:
+      #     - "Product 1"
+      #     - "Product 2"
 
-      - name: last_purchased_product
-        description: The name of the last product purchased by the customer.
-        data_type: TEXT
-        expr: last_purchased_product
-        unique: false
-        sample_values:
-          - "Product 1"
-          - "Product 2"
+      # - name: last_purchased_product
+      #   synonyms: ["last_sold_product"]
+      #   description: >
+      #     The name of the last product purchased by the customer.
+      #     Do not alias that column after aggregation or windowing, preserve the name `last_purchased_product`
+      #   data_type: TEXT
+      #   expr: last_purchased_product
+      #   unique: false
+      #   sample_values:
+      #     - "Product 1"
+      #     - "Product 2"
 
       - name: time_since_last_purchase
-        description: The number of days since the customer's last purchase.
+        synonyms: ["days_since_last_purchase", "last_purchase_days_ago"]
+        description: >
+          The number of days since the customer's last purchase.
+          Do not alias that column after aggregation or windowing, preserve the name `time_since_last_purchase`
         data_type: INTEGER
         expr: time_since_last_purchase
         unique: false
         sample_values:
-          - "5"
-          - "10"
+          - 5
+          - 10
 
     time_dimensions:
       - name: first_purchase_date
-        description: The date of the customer's first purchase.
+        description: >
+          The date of the customer's first purchase.
+          Do not alias that column after aggregation or windowing, preserve the name `first_purchase_date`
         data_type: TIMESTAMP
         unique: false
         expr: first_purchase_date
@@ -141,7 +175,9 @@ tables:
           - "2021-02-01"
 
       - name: last_purchase_date
-        description: The date of the customer's last purchase.
+        description: >
+          The date of the customer's last purchase.
+          Do not alias that column after aggregation or windowing, preserve the name `last_purchase_date`
         data_type: TIMESTAMP
         unique: false
         expr: last_purchase_date
