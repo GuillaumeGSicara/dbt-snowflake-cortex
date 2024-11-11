@@ -75,16 +75,12 @@ def display_content(content: list, message_index: int = None) -> None:
                     session = get_active_session()
                     df = session.sql(item["statement"]).to_pandas()
                     if len(df.index) > 1:
-                        data_tab, line_tab, bar_tab = st.tabs(
-                            ["Data", "Line Chart", "Bar Chart"]
+                        (data_tab,) = st.tabs(
+                            ["Data"]
                         )
                         data_tab.dataframe(df)
                         if len(df.columns) > 1:
                             df = df.set_index(df.columns[0])
-                        with line_tab:
-                            st.line_chart(df)
-                        with bar_tab:
-                            st.bar_chart(df)
                     else:
                         st.dataframe(df)
 
