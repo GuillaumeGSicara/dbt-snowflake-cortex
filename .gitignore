@@ -1,6 +1,7 @@
 .vscode/
 .python-version/
 .DS_Store/
+**/__pycache__/
 
 target/
 dbt_packages/

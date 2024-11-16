@@ -1,170 +1,141 @@
-
-import os
-import yaml  # type: ignore
-import json
-import requests  # type: ignore
+import pandas as pd
 import streamlit as st
-from typing import Dict, List, Optional
+
+from typing import Dict, List, Callable
 from snowflake.connector import SnowflakeConnection
-from snowflake.snowpark.session import Session, SnowparkSessionException
 from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark.session import Session
+
+from models.snowflake import ContentType, ContentItem, Message, ResponseModel
+from snowflake_helpers.api import call_snowflake_endpoint
+from snowflake_helpers.local_connection import get_connections_params, get_local_snowpark_session
 
 DATABASE = "DBT_CORTEX"
 SCHEMA = "DEFINITIONS"
 STAGE = "SEMANTIC_RPT_CUSTOMER_INFORMATIONS"
 FILE = "semantic_rpt_customer_informations.yml"
+LOCAL_PROFILE_NAME = "DEMO_CORTEX_ACCOUNT_ADMIN"
 ENV: str
-
-def get_dbt_connection_info(profile_name: str, target_name: str) -> Dict[str, str]:
-    """Yields a dictionary of the connections from the dbt profiles.yml file in the root user directory.
-
-    Args:
-        profile_name (str): The name of the profile in the the profile.yml file.
-        target_name (str): the name of the target in the profile.yml file for the profile
-
-    Returns:
-        dict[str, str]: a dictionary of the connection information for the profile and target
-    """
-
-    profiles_path = os.path.expanduser('~/.dbt/profiles.yml')
-    with open(profiles_path, 'r') as file:
-        profiles = yaml.safe_load(file)
-
-    return profiles.get(profile_name, {}).get('outputs', {}).get(target_name, {})
-
-def get_connections_params(session_params: Dict = {}) -> Dict:
-    dbt_conn = get_dbt_connection_info(
-        profile_name='cortex-profile',
-        target_name='dev'
-    )
-    return {
-        'user': dbt_conn["user"],
-        'password': dbt_conn["password"],
-        'account': dbt_conn["account"],
-        'session_parameters': session_params
-    }
-
-def call_snowflake_endpoint(method: str, endpoint: str, request_body: Dict = {}) -> Dict:
-    content = {}
-    allowed_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"}
-    if method.upper() not in allowed_methods:
-        raise ValueError(f"HTTP method '{method}' is not allowed. Allowed methods are: {allowed_methods}")
-    if ENV == "prod":
-        import _snowflake
-        resp = _snowflake.send_snow_api_request(
-            method.upper(),
-            f"{endpoint}",
-            {},
-            {},
-            request_body,
-            {},
-            30000,
-        )
-        if resp["status"] < 400:
-            content = json.loads(resp["content"])
-        else:
-            raise Exception(
-                f"Failed request with status {resp['status']}: {resp}"
-            )
-    elif ENV == "dev":
-        resp = requests.request(
-            method=method.upper(),
-            url=f"https://{st.session_state.CONN.host}{endpoint}",
-            json=request_body,
-            headers={
-                "Authorization": f'Snowflake Token="{st.session_state.CONN.rest.token}"',
-                "Content-Type": "application/json",
-            },
-        )
-        if resp.status_code < 400:
-            content = json.loads(resp.content)
-        else:
-            raise Exception(
-                f"Failed request with status {resp.status_code}: {resp.text}"
-            )
-
-    return content
-
-
-def get_dev_session() -> Session:
-    return Session.builder.app_name("local_dev_env").configs(
-        get_connections_params()
-    ).create()
 
 # For local developement
 try:
-    import _snowflake
+    import _snowflake  # type: ignore
     ENV = "prod"
+    snowpark_session = get_active_session()
 except ImportError:
-    st.session_state.CONN = SnowflakeConnection(**get_connections_params())
-    session =  get_dev_session()
+    st.session_state.CONN = SnowflakeConnection(**get_connections_params(profile_name=LOCAL_PROFILE_NAME))
+    snowpark_session =  get_local_snowpark_session(profile_name=LOCAL_PROFILE_NAME)
     ENV = "dev"
 
-def send_message(prompt: str) -> Dict:
+def send_message(prompt: str) -> ResponseModel:
     """Calls the REST API and returns the response."""
     request_body = {
         "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
+            Message(
+                role="user",
+                content=[
+                    ContentItem(
+                        type=ContentType.TEXT,
+                        text=prompt
+                    )
                 ]
-            }
+            ).model_dump()
         ],
         "semantic_model_file": f"@{DATABASE}.{SCHEMA}.{STAGE}/{FILE}",
     }
 
-    return call_snowflake_endpoint(
-        method="POST",
-        endpoint="/api/v2/cortex/analyst/message",
-        request_body=request_body
+    return ResponseModel(
+        **call_snowflake_endpoint(
+            method="POST",
+            endpoint="/api/v2/cortex/analyst/message",
+            env=ENV,
+            host=st.session_state.CONN.host if hasattr(st.session_state, 'CONN') else None,
+            token=st.session_state.CONN.rest.token if hasattr(st.session_state, 'CONN') else None,
+            request_body=request_body
+        )
     )
 
 def process_message(prompt: str) -> None:
     """Processes a message and adds the response to the chat."""
     st.session_state.messages.append(
-        {"role": "user", "content": [{"type": "text", "text": prompt}]}
+        Message(
+            role="user",
+            content=[
+                ContentItem(
+                    type=ContentType.TEXT,
+                    text=prompt
+                )
+            ]
+        )
     )
     with st.chat_message("user"):
         st.markdown(prompt)
     with st.chat_message("assistant"):
         with st.spinner("Generating response..."):
             response = send_message(prompt=prompt)
-            content = response["message"]["content"]
+            content = response.message.content
             display_content(content=content)
-    st.session_state.messages.append({"role": "assistant", "content": content})
 
+    st.session_state.messages.append(
+        Message(
+            role="assistant",
+            content=content
+        )
+    )
 
-def display_content(content: List, message_index: int = None) -> None:
+def _display_text(text: str) -> None:
+    """Displays a text message."""
+    st.markdown(text)
+
+def _display_suggestions(suggestions: List[str], message_index: int) -> None:
+    """Displays a list of suggestions."""
+    with st.expander("Suggestions", expanded=True):
+        for suggestion_index, suggestion in enumerate(suggestions):
+            if st.button(suggestion, key=f"{message_index}_{suggestion_index}"):
+                st.session_state.active_suggestion = suggestion
+
+def _display_sql(snowpark_session: Session, statement: str) -> None:
+    """Displays a SQL query and its results."""
+    with st.expander("SQL Query", expanded=False):
+        st.code(statement, language="sql")
+    with st.expander("Results", expanded=True):
+        with st.spinner("Running SQL..."):
+            df = _run_sql(snowpark_session, statement)
+            if len(df.index) > 1:
+                (data_tab,) = st.tabs(
+                    ["Data"]
+                )
+                data_tab.dataframe(df)
+                if len(df.columns) > 1:
+                    df = df.set_index(df.columns[0])
+            else:
+                st.dataframe(df)
+
+def _run_sql(snowpark_session: Session, statement: str) -> pd.DataFrame:
+    """Runs a SQL query and displays the results."""
+    return snowpark_session.sql(statement).to_pandas()
+
+def display_content(content: List[ContentItem], message_index: int = None) -> None:
     """Displays a content item for a message."""
     message_index = message_index or len(st.session_state.messages)
-    for item in content:
-        if item["type"] == "text":
-            st.markdown(item["text"])
-        elif item["type"] == "suggestions":
-            with st.expander("Suggestions", expanded=True):
-                for suggestion_index, suggestion in enumerate(item["suggestions"]):
-                    if st.button(suggestion, key=f"{message_index}_{suggestion_index}"):
-                        st.session_state.active_suggestion = suggestion
-        elif item["type"] == "sql":
-            with st.expander("SQL Query", expanded=False):
-                st.code(item["statement"], language="sql")
-            with st.expander("Results", expanded=True):
-                with st.spinner("Running SQL..."):
-                    session = get_active_session() if ENV == "prod" else get_dev_session()
-                    df = session.sql(item["statement"]).to_pandas()
-                    if len(df.index) > 1:
-                        (data_tab,) = st.tabs(
-                            ["Data"]
-                        )
-                        data_tab.dataframe(df)
-                        if len(df.columns) > 1:
-                            df = df.set_index(df.columns[0])
-                    else:
-                        st.dataframe(df)
+
+    handlers_register: Dict[str, Callable] = {
+        ContentType.TEXT: _display_text,
+        ContentType.SUGGESTIONS: _display_suggestions,
+        ContentType.SQL: _display_sql,
+    }
+
+    for content_item in content:
+        handler = handlers_register.get(content_item.type)
+        if handler:
+            if content_item.type == ContentType.TEXT:
+                handler(content_item.text)
+            elif content_item.type == ContentType.SUGGESTIONS:
+                handler(content_item.suggestions, message_index)
+            elif content_item.type == ContentType.SQL:
+                handler(snowpark_session, content_item.statement)
+        else:
+            st.warning(f"Unknown content type: {content_item.type}")
 
 
 st.title("Cortex analyst")
@@ -177,11 +148,12 @@ st.markdown(f"""
 if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.suggestions = []
-    st.session_state.active_suggestion = None
+    st.session_state.active_suggestion = ""
 
 for message_index, message in enumerate(st.session_state.messages):
-    with st.chat_message(message["role"]):
-        display_content(content=message["content"], message_index=message_index)
+    message: Message  # type: ignore
+    with st.chat_message(message.role):
+        display_content(content=message.content, message_index=message_index)
 
 if user_input := st.chat_input("What is your question?"):
     process_message(prompt=user_input)
