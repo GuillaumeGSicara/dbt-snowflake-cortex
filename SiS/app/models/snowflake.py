@@ -8,6 +8,7 @@ class ContentType(str, Enum):
     TEXT = "text"
     SUGGESTIONS = "suggestions"
 
+
 class ContentItem(BaseModel):
     type: ContentType
     text: Optional[str] = None
@@ -16,9 +17,11 @@ class ContentItem(BaseModel):
     suggestions: Optional[List[str]] = None
     statement: Optional[str] = None
 
+
 class Message(BaseModel):
     content: List[ContentItem]
     role: str
+
 
 class ResponseModel(BaseModel):
     message: Message

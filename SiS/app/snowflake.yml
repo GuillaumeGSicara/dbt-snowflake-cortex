@@ -13,8 +13,7 @@ entities:
 
       # snowflake_helpers
       - snowflake_helpers/api.py
-      - snowflake_helpers/local_connection.py
       # models
       - models/snowflake.py
-      # streamlit_helpers
-      - streamlit_helpers/widget_handlers.py
+      # environment scripts
+      - environment/environment.py
