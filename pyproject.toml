@@ -13,3 +13,6 @@ Documentation = "https://guillaumegsicara.github.io/dbt-snowflake-cortex/#!/over
 
 [tool.mypy]
 python_version = "3.11"
+
+[tool.ruff]
+line-length = 88

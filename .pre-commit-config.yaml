@@ -13,3 +13,12 @@ repos:
     rev: v0.910  # Use the latest stable version of mypy
     hooks:
       - id: mypy # directly references the requirements.txt file
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.7.4
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: [--select=C901, --select=E501]
+      # Run the formatter.
+      - id: ruff-format

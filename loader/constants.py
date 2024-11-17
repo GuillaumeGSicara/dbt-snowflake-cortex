@@ -1,7 +1,19 @@
 # Generated with GPT-4
 
-TAGS = ["Marketing", "Alert", "Refund", "Secur", "Support", "Auto"]
-COUNTRIES = ["France", "United-Kingdom", "Germany", "Ireland"]
+TAGS = [
+    "Marketing",
+    "Alert",
+    "Refund",
+    "Secur",
+    "Support",
+    "Auto",
+]
+COUNTRIES = [
+    "France",
+    "United-Kingdom",
+    "Germany",
+    "Ireland",
+]
 CAMPAIGNS = [
     "Automated Marketing Alerts",
     "Refund Security Hub",
@@ -62,7 +74,7 @@ CAMPAIGNS = [
     "Rise & Thrive Campaign",
     "The Future Forward Drive",
     "Empowerment Odyssey",
-    "Catalyst for Change Initiative"
+    "Catalyst for Change Initiative",
 ]
 
 PRODUCTS = [
@@ -80,5 +92,5 @@ PRODUCTS = [
     "Website and E-Commerce Development Services",
     "Point of Sale (POS) Systems",
     "Smart Home Devices (IoT products, smart locks, thermostats)",
-    "Server and Hosting Solutions"
+    "Server and Hosting Solutions",
 ]
