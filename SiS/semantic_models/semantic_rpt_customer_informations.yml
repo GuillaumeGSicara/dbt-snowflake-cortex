@@ -1,18 +1,21 @@
 name: semantic_rpt_customer_informations
 description: >
-  This model contains general customer information.
-  It only contains one table `rpt_customer_informations` which is a view of the table `dim_customers` with additional information about the customer's activity.
-      Besides customer records, the following information is added:
-        - What campaigns the customer has received (with additional related attributes)
-        - What sales the customer has made (with additional related attributes)
+  This model provides a comprehensive view of customer data through a single table called rpt_customer_informations.
+  This table is derived from dim_customers and enriched with two key types of customer activity data:
+    - Campaign history - showing which marketing campaigns reached each customer, along with campaign details
+    - Sales history - tracking customer purchases and their associated characteristics"
+
+
 
 tables:
   - name: rpt_customer_informations
     description: >
-      The table contains one line per customer_id, it was created with the customer records in the table dim_customers
-      The tables then enrich customer records with activity informations
-        - What campaigns the customer has received (with additional related attributes)
-        - What sales the customer has made(with additional related attributes)
+      This table maintains a one-to-one relationship with customers, using customer_id as the unique identifier.
+      It builds upon the base customer records from `dim_customers` and enhances each record with two activity datasets:
+        - Campaign history - tracking received marketing campaigns and their details
+        - Sales history - documenting customer purchases and their related attributes
+
+
 
     base_table:
       database: DBT_CORTEX
